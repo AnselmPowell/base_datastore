@@ -2300,8 +2300,6 @@ DJANGO_SECRET_KEY=vq0Ey5FbPdC2Zl54kJ5jkgdJ0SsqcdPwwWj4bWYM9jTfUdJ5gu8kH9C_h3g23r
 ```
 
 
-
-
 ### Step 3: Initialise Git for Backend Project
 1. Lets start with the backend, open your terminal in VS Code.
 2. Make sure you are at the  root directory of your project called **Datastore**:
@@ -2460,6 +2458,107 @@ git push -u origin master
 
 
 ## TASK 7:  DEPOLY FRONTEND AND BACKEND TO RAILWAY 
+- This process will now prepare your application for production deployment.
+
+### Step 1: Prepare Your Backend (Django) for Deployment
+
+1. Create a Procfile in your backend root directory `datastore/Procfile`
+
+```bash
+web: gunicorn core.wsgi --log-file -
+```
+
+2. Install Gunicorn
+
+```bash
+pip install gunicorn
+```
+
+3. Create a Docker file in your root directory  `datastore/Dockerfile`. Copy all the code below
+
+```Dockerfile
+# Set the python version as a build-time argument
+# with Python 3.12 as the default
+ARG PYTHON_VERSION=3.12-slim-bullseye
+FROM python:${PYTHON_VERSION}
+
+# Create a virtual environment
+RUN python -m venv /opt/venv
+
+# Set the virtual environment as the current location
+ENV PATH=/opt/venv/bin:$PATH
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Set Python-related environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Install os dependencies for our mini vm
+RUN apt-get update && apt-get install -y \
+    # for postgres
+    libpq-dev \
+    # for Pillow
+    libjpeg-dev \
+    # for CairoSVG
+    libcairo2 \
+    # other
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create the mini vm's code directory
+RUN mkdir -p /code
+
+# Set the working directory to that same code directory
+WORKDIR /code
+
+# Copy the requirements file into the container
+COPY requirements.txt /tmp/requirements.txt
+
+# copy the project code into the container's working directory
+COPY ./src /code
+
+# Install the Python project requirements
+RUN pip install -r /tmp/requirements.txt
+RUN pip install gunicorn
+
+# database isn't available during build
+# run any other commands that do not need the database
+# such as:
+# RUN python manage.py collectstatic --noinput
+
+# set the Django default project name
+ARG PROJ_NAME="core"
+
+# create a bash script to run the Django project
+# this script will execute at runtime when
+# the container starts and the database is available
+RUN printf "#!/bin/bash\n" > ./paracord_runner.sh && \
+    printf "RUN_PORT=\"\${PORT:-8000}\"\n\n" >> ./paracord_runner.sh && \
+    printf "python manage.py migrate --no-input\n" >> ./paracord_runner.sh && \
+    printf "gunicorn ${PROJ_NAME}.wsgi:application --bind \"0.0.0.0:\$RUN_PORT\"\n" >> ./paracord_runner.sh
+
+# make the bash script executable
+RUN chmod +x paracord_runner.sh
+
+# Clean up apt cache to reduce image size
+RUN apt-get remove --purge -y \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Run the Django project via the runtime script
+# when the container starts
+CMD ./paracord_runner.sh
+```
+
+
+
+
+
+
+
 
 
 
