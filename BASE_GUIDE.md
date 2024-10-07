@@ -2,6 +2,8 @@
 # FullStack Project Template  
 # Setup Guide
 
+
+---
 This guide will walk you through setting up a basic React - Next.js project using JavaScript. We'll explain each step in detail to help you understand what we're doing and why it's necessary.
 
 
@@ -207,7 +209,7 @@ You shoud now see the defult Next JS start page with text saying
 
 ## TASK 1 COMPLETE: FRONTEND AND BACKEND IS ALL SETUP!!. 
 
---- 
+
 
 ## TASK 2. FRONTEND(NEXTJS) FILE UPDATES AND CONFIGURATION FOR PRODUCTION READY APPLICAION
 If everything was set up correctly, your project folder structure should look like this:
@@ -2299,69 +2301,165 @@ DJANGO_SECRET_KEY=vq0Ey5FbPdC2Zl54kJ5jkgdJ0SsqcdPwwWj4bWYM9jTfUdJ5gu8kH9C_h3g23r
 
 
 
-### Step 1: Initialize Git in Your Project
-1. Open your terminal in VS Code.
-2. Navigate to the root directory of your project my is called (`BASE_PROJECT_TEMPLATE`):
-   ```bash
-   cd path/to/BASE_PROJECT_TEMPLATE
-   ```
-   You may need to go back a folder
-   ```bash
-   cd ..
-   ```
 
-3. Initialize a new Git repository:
-   ```bash
-   git init
-   ```
+### Step 3: Initialise Git for Backend Project
+1. Lets start with the backend, open your terminal in VS Code.
+2. Make sure you are at the  root directory of your project called **Datastore**:
+3. Initialise a new Git repository:
 
-### Step 2: Add Your Files to the Staging Area
+```bash
+git init
+```
+
+Create a `.gitignore` in the root directory and copy the content below:
+
+```.gitignore
+# Python
+__pycache__/
+*.py[cod]
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+media/
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+```
+
+4. Add Your Files to the Staging Area
 Add all your files to the staging area:
 ```bash
 git add .
 ```
 *The `.` indicates that you want to add all files in the current directory.*
 
-### Step 3: Commit Your Changes
-Commit your changes with a descriptive message:
+5. Commit your changes with a descriptive message:
 ```bash
 git commit -m "Initial commit"
 ```
 
-### Step 4: Create a New Repository on GitHub
-1. Go to GitHub and log in to your account.
-2. Click the "+" icon in the upper right corner and select **New repository**.
-3. Name your repository (e.g., `base_react_app`).
-4. Optionally, add a description.
-5. Choose whether the repository should be public or private.
-6. **Do not** initialize the repository with a README, `.gitignore`, or license (since you already have files in your local repo).
-7. Click **Create repository**.
+6. *** Create a New Repository on GitHub *** 
+  1. Go to GitHub and log in to your account.
+  2. Click the "+" icon in the upper right corner and select **New repository**.
+  3. Name your repository (e.g., `base_datastore`).
+  4. Optionally, add a description.
+  5. Choose whether the repository should be public or private.
+  6. **Do not** initialise the repository with a README, `.gitignore`, or license (since you already have files in your local repo).
+  7. Click **Create repository**.
 
-### Step 5: Link Your Local Repository to GitHub
+7.  Link Your Local Repository to GitHub
 In your terminal, link your local repository to the newly created GitHub repository. Replace `<USERNAME>` with your GitHub username and `<REPOSITORY_NAME>` with the name of your repository:
+
 ```bash
 git remote add origin https://github.com/<USERNAME>/<REPOSITORY_NAME>.git
 ```
 *Example:*
 ```bash
-git remote add origin https://github.com/johndoe/base_react_app.git
+git remote add origin https://github.com/johndoe/base_datastore.git
 ```
 
-### Step 6: Push Your Code to GitHub
+8. Push Your Code to GitHub
 Push your local commits to GitHub:
+
+```bash
+git push -u origin master
+```
+
+### Step 4: Initialise Git for Frontend Project
+
+1. Now the Frontend, open your terminal in VS Code for the frontend project.
+2. Make sure you are at the root directory of your project called **Interface**:
+3. Initialise a new Git repository:
+
+```bash
+git init
+```
+
+Create a `.gitignore` in the root directory and copy the content below:
+
+```.gitignore
+# Dependencies
+/node_modules
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+
+# Misc
+.DS_Store
+*.pem
+```
+
+4. Add Your Files to the Staging Area
+Add all your files to the staging area:
+```bash
+git add .
+```
+*The `.` indicates that you want to add all files in the current directory.*
+
+5. Commit your changes with a descriptive message:
+```bash
+git commit -m "Initial commit"
+```
+
+6. *** Create a New Repository on GitHub *** 
+  1. Go to GitHub and log in to your account.
+  2. Click the "+" icon in the upper right corner and select **New repository**.
+  3. Name your repository (e.g., `base_interface`).
+  4. Optionally, add a description.
+  5. Choose whether the repository should be public or private.
+  6. **Do not** initialise the repository with a README, `.gitignore`, or license (since you already have files in your local repo).
+  7. Click **Create repository**.
+
+7.  Link Your Local Repository to GitHub
+In your terminal, link your local repository to the newly created GitHub repository. Replace `<USERNAME>` with your GitHub username and `<REPOSITORY_NAME>` with the name of your repository:
+
+```bash
+git remote add origin https://github.com/<USERNAME>/<REPOSITORY_NAME>.git
+```
+*Example:*
+```bash
+git remote add origin https://github.com/johndoe/base_datastore.git
+```
+
+8. Push Your Code to GitHub
+Push your local commits to GitHub:
+
 ```bash
 git push -u origin master
 ```
 
 
 
+### TASK 6 COMPLETE: FRONTEND AND BACKEND ARE UPLOAD TO GITHUB.
 
 
-
-
-
-
-
+## TASK 7:  DEPOLY FRONTEND AND BACKEND TO RAILWAY 
 
 
 
@@ -2457,53 +2555,6 @@ export function setToken(token) {
 
 
 
-
-
-
-
-
-### Step 3: Configure the Vercel json to the django backend 
-
-1. ***Update the Vercel.json *** 
- - Head back to the root folder `Base_Project_Template` and locate the `vercel.json` file
- - Remove all the json code and replace it with the below code:
- - This configuration tells Vercel to Build both the Next.js app and the Django app
- - Route API requests to Django 
- - while serving the frontend from Next.js ( Will improve this in the future so Vercel routes api request back to Nextjs)
-
- ```json
-
- 
-{
-    "builds": [
-      {
-        "src": "interface/package.json",
-        "use": "@vercel/next"
-      },
-      {
-        "src": "datastore/core/wsgi.py",
-        "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
-      }
-    ],
-    "routes": [
-      {
-        "src": "/api/(.*)",
-        "dest": "datastore/core/wsgi.py"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "interface/$1"
-      }
-    ],
-    "env": {
-        "DJANGO_SETTINGS_MODULE": "core.settings",
-        "DJANGO_SECRET_KEY": "@django-secret-key",
-        "DATABASE_URL": "@database-url"
-    }
-  }
- ```
-
 2. ***Commit django***  
 - Head back to the root directory `Base_Project_Template` 
 - Perform a git commit to save your django folders and files:
@@ -2532,69 +2583,6 @@ cd datastore
 python manage.py makemigrations
 python manage.py migrate
 ```
-
-
-
-
-## TASK 4: Add Repo's to GitHub
-
-### Step 1: Initialize Git in Your Project
-1. Open your terminal in VS Code.
-2. Navigate to the root directory of your project my is called (`BASE_PROJECT_TEMPLATE`):
-   ```bash
-   cd path/to/BASE_PROJECT_TEMPLATE
-   ```
-   You may need to go back a folder
-   ```bash
-   cd ..
-   ```
-
-3. Initialize a new Git repository:
-   ```bash
-   git init
-   ```
-
-### Step 2: Add Your Files to the Staging Area
-Add all your files to the staging area:
-```bash
-git add .
-```
-*The `.` indicates that you want to add all files in the current directory.*
-
-### Step 3: Commit Your Changes
-Commit your changes with a descriptive message:
-```bash
-git commit -m "Initial commit"
-```
-
-### Step 4: Create a New Repository on GitHub
-1. Go to GitHub and log in to your account.
-2. Click the "+" icon in the upper right corner and select **New repository**.
-3. Name your repository (e.g., `base_react_app`).
-4. Optionally, add a description.
-5. Choose whether the repository should be public or private.
-6. **Do not** initialize the repository with a README, `.gitignore`, or license (since you already have files in your local repo).
-7. Click **Create repository**.
-
-### Step 5: Link Your Local Repository to GitHub
-In your terminal, link your local repository to the newly created GitHub repository. Replace `<USERNAME>` with your GitHub username and `<REPOSITORY_NAME>` with the name of your repository:
-```bash
-git remote add origin https://github.com/<USERNAME>/<REPOSITORY_NAME>.git
-```
-*Example:*
-```bash
-git remote add origin https://github.com/johndoe/base_react_app.git
-```
-
-### Step 6: Push Your Code to GitHub
-Push your local commits to GitHub:
-```bash
-git push -u origin master
-```
-
-
-
-
 
 
 
