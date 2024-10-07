@@ -2554,7 +2554,98 @@ CMD ./paracord_runner.sh
 ```
 
 
+3. Create a **railway.toml**  file in your root directory  `datastore/railway.toml`. Copy all the code below
 
+```bash
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "./Dockerfile"
+watchPatterns = [
+    "requirements.txt", 
+    "src/**", 
+    "railway.toml",
+    "Dockerfile",
+]
+
+```
+
+4. Add a health check endpoints to your Django application. In your urls.py:
+- Health check endpoint is an important practice to check the state of your deployed application. 
+- First in your Core folder `src/core/` create a file called **"Healthcheck"** `src/core/healthcheck.py`. Copy the code below:
+
+```python
+from django.http import JsonResponse
+from django.db import connections
+from django.db.utils import OperationalError
+from django.core.cache import cache
+from redis.exceptions import RedisError
+import logging
+
+logger = logging.getLogger(__name__)
+
+def health_check(request):
+    health_status = {
+        "status": "healthy",
+        "database": "up",
+        "cache": "up",
+        "errors": []
+    }
+
+    # Check database connection
+    try:
+        connections['default'].cursor()
+    except OperationalError:
+        health_status["database"] = "down"
+        health_status["status"] = "unhealthy"
+        health_status["errors"].append("Database connection failed")
+
+    # Check cache (assuming you're using Redis)
+    try:
+        cache.set('health_check', 'OK', 10)
+        if cache.get('health_check') != 'OK':
+            raise RedisError("Cache test failed")
+    except RedisError as e:
+        health_status["cache"] = "down"
+        health_status["status"] = "unhealthy"
+        health_status["errors"].append(f"Cache error: {str(e)}")
+
+    # Log errors if any
+    if health_status["errors"]:
+        logger.error(f"Health check failed: {', '.join(health_status['errors'])}")
+
+    status_code = 200 if health_status["status"] == "healthy" else 503
+    return JsonResponse(health_status, status=status_code)
+```
+
+
+5. Add a health check endpoints to your Django application. In your urls.py `src/core/urls.py`
+
+```python 
+from django.contrib import admin
+from django.urls import path, include
+from django.views.generic import RedirectView
+from .healthcheck import health_check 
+
+urlpatterns = [
+    path('', RedirectView.as_view(url='/api/', permanent=False)),
+    path('admin/', admin.site.urls),
+    path('api/', include('api.urls')),
+
+    path('health/', health_check, name='health_check'),
+]
+```
+
+
+6. Commit deployment Setup   
+- Head back to the root directory `Base_Project_Template` 
+- Perform a git commit to save your django folders and files created:
+
+```bash
+  cd ..
+  git add .
+  git commit -m "deployment Setup "
+  git push -u origin master
+```
 
 
 
