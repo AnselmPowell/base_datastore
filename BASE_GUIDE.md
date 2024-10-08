@@ -2633,6 +2633,8 @@ urlpatterns = [
 ```
 
 
+6. 
+
 6. Commit deployment Setup   
 - Head back to the root directory `Base_Project_Template` 
 - Perform a git commit to save your django folders and files created:
@@ -2678,10 +2680,23 @@ urlpatterns = [
 - Deployment can take up to 3-4 minutes 
 
 
+9. Once deployed go **settings** tab inside the deployed project scroll down to **Networking** and **Public Networking**  You should see your public domain url will look somthing like this:
+
+```bash
+web-production-040d2.up.railway.app
+```
+
+- You backend is now deployed and can be accessed by the web!
 
 
+### Step 3: Add CSRF verification
 
+1. Inside the Core folder `datastore/src/core/`, In Settings file `datastore/src/core/settings.py`. In your **ALLOWED_HOSTS**  add ***.railway.app***
 
+```python
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app']
+
+```
 
 
 
