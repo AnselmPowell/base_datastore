@@ -26,6 +26,11 @@ DEBUG = config("DJANGO_DEBUG", cast=bool, default=False)
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app']
 
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://*.railway.app",
+    "https://*.railway.app",
+]
+
 CORS_ALLOWED_ORIGINS = []
 ENV_CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", cast=str, default="")
 for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
