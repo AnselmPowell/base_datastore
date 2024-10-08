@@ -2453,8 +2453,9 @@ git push -u origin master
 ```
 
 
-
 ### TASK 6 COMPLETE: FRONTEND AND BACKEND ARE UPLOAD TO GITHUB.
+
+
 
 
 ## TASK 7:  DEPOLY FRONTEND AND BACKEND TO RAILWAY 
@@ -2560,6 +2561,11 @@ CMD ./paracord_runner.sh
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "./Dockerfile"
+
+# [deploy]
+# healthcheckPath = "/health/"
+# healthcheckTimeout = 100
+
 watchPatterns = [
     "requirements.txt", 
     "src/**", 
@@ -2578,7 +2584,7 @@ from django.http import JsonResponse
 from django.db import connections
 from django.db.utils import OperationalError
 from django.core.cache import cache
-from redis.exceptions import RedisError
+# from redis.exceptions import RedisError
 import logging
 
 logger = logging.getLogger(__name__)
@@ -2599,16 +2605,6 @@ def health_check(request):
         health_status["status"] = "unhealthy"
         health_status["errors"].append("Database connection failed")
 
-    # Check cache (assuming you're using Redis)
-    try:
-        cache.set('health_check', 'OK', 10)
-        if cache.get('health_check') != 'OK':
-            raise RedisError("Cache test failed")
-    except RedisError as e:
-        health_status["cache"] = "down"
-        health_status["status"] = "unhealthy"
-        health_status["errors"].append(f"Cache error: {str(e)}")
-
     # Log errors if any
     if health_status["errors"]:
         logger.error(f"Health check failed: {', '.join(health_status['errors'])}")
@@ -2619,6 +2615,7 @@ def health_check(request):
 
 
 5. Add a health check endpoints to your Django application. In your urls.py `src/core/urls.py`
+- Comment it out for now. " # "
 
 ```python 
 from django.contrib import admin
@@ -2631,7 +2628,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
 
-    path('health/', health_check, name='health_check'),
+    # path('health/', health_check, name='health_check'),
 ]
 ```
 
@@ -2646,6 +2643,53 @@ urlpatterns = [
   git commit -m "deployment Setup "
   git push -u origin master
 ```
+
+
+### Step 2: Deploy Backend to Railway 
+
+ 1. Create a Railway Account 
+
+1. **Go to Railway**
+   Visit [Railway](https://railway.app/) and sign up or log in using your GitHub account.
+
+2. In Railway, create a new project. Select ***NEW***
+
+3. Then select ***Deploy from GitHub repo***
+
+4. Select your github account and click ***Install & Authorise***
+
+5. Click the screen ***Create a New Project***, Go through the process again and select your **base_datastore** Github Repo
+
+6. Then on the next screen select ***Add Varibales***
+
+7. You want to add your enviroment varibales from your backend .env  like below: 
+- Press ***New Varibale*** to add new varibale 
+
+```bash
+   | Key                   |  Value                                               |
+   |-----------------------|------------------------------------------------------|
+   | DJANGO_SECRET_KEY     | PwWj4b5j4bWYM9jTfUdJ5gu8kH9C_Wj4bWYM9jTfUdJ5gu       |
+   | DJANGO_DEBUG          |  1                                                   |
+   | CORS_ALLOWED_ORIGINS  |  http://localhost:3000,http://127.0.0.1:3000         |
+
+```
+
+8. On the left hand side click ***Delpoy***
+- Deployment can take up to 3-4 minutes 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
