@@ -1289,6 +1289,20 @@ urlpatterns = [
 ]
 ```
 
+
+3. Run migrations to ensure all changes are applied:
+
+```bash
+rav run makemigrations
+rav run migrate
+```
+- Restart your server:
+
+```bash
+rav run server
+```
+
+
 ### Step 3: Update the Frontend(NextJs) Configaration 
 
 1. Update next.config.js
@@ -2185,9 +2199,6 @@ C: interface.
 
 
 
-
-
-
 ## TASK 6: ADD FRONTEND AND BACKEND REPOSITORIES TO GITHUB
 
 ### Step 1: Improve Enviroment Variables and Configurations Frontend(NextJS)
@@ -2457,7 +2468,6 @@ git push -u origin master
 
 
 
-
 ## TASK 7:  DEPOLY FRONTEND AND BACKEND TO RAILWAY 
 - This process will now prepare your application for production deployment.
 
@@ -2555,16 +2565,14 @@ CMD ./paracord_runner.sh
 ```
 
 
-3. Create a **railway.toml**  file in your root directory  `datastore/railway.toml`. Copy all the code below
+3. Create a **railway.toml**  file in your root directory  `datastore/railway.toml`. Copy all the code below:
+- This file will be read by docker and will contain the deployment config for railway.
 
 ```bash
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "./Dockerfile"
 
-# [deploy]
-# healthcheckPath = "/health/"
-# healthcheckTimeout = 100
 
 watchPatterns = [
     "requirements.txt", 
@@ -2575,81 +2583,21 @@ watchPatterns = [
 
 ```
 
-4. Add a health check endpoints to your Django application. In your urls.py:
-- Health check endpoint is an important practice to check the state of your deployed application. 
-- First in your Core folder `src/core/` create a file called **"Healthcheck"** `src/core/healthcheck.py`. Copy the code below:
 
-```python
-from django.http import JsonResponse
-from django.db import connections
-from django.db.utils import OperationalError
-from django.core.cache import cache
-# from redis.exceptions import RedisError
-import logging
-
-logger = logging.getLogger(__name__)
-
-def health_check(request):
-    health_status = {
-        "status": "healthy",
-        "database": "up",
-        "cache": "up",
-        "errors": []
-    }
-
-    # Check database connection
-    try:
-        connections['default'].cursor()
-    except OperationalError:
-        health_status["database"] = "down"
-        health_status["status"] = "unhealthy"
-        health_status["errors"].append("Database connection failed")
-
-    # Log errors if any
-    if health_status["errors"]:
-        logger.error(f"Health check failed: {', '.join(health_status['errors'])}")
-
-    status_code = 200 if health_status["status"] == "healthy" else 503
-    return JsonResponse(health_status, status=status_code)
-```
-
-
-5. Add a health check endpoints to your Django application. In your urls.py `src/core/urls.py`
-- Comment it out for now. " # "
-
-```python 
-from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import RedirectView
-from .healthcheck import health_check 
-
-urlpatterns = [
-    path('', RedirectView.as_view(url='/api/', permanent=False)),
-    path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
-
-    # path('health/', health_check, name='health_check'),
-]
-```
-
-
-6. 
-
-6. Commit deployment Setup   
-- Head back to the root directory `Base_Project_Template` 
+4. Commit deployment Setup   
+- Head back to the root directory `datastore` 
 - Perform a git commit to save your django folders and files created:
 
 ```bash
   cd ..
   git add .
-  git commit -m "deployment Setup "
+  git commit -m "deployment Setup"
   git push -u origin master
 ```
 
 
 ### Step 2: Deploy Backend to Railway 
 
- 1. Create a Railway Account 
 
 1. **Go to Railway**
    Visit [Railway](https://railway.app/) and sign up or log in using your GitHub account.
@@ -2686,6 +2634,8 @@ urlpatterns = [
 web-production-040d2.up.railway.app
 ```
 
+- Use the  public domain url link in your web brower and you should be redicted to your Api endpoint and see 
+ **API ROOT  {"message": "Welcome to the Django API DataStore"}**
 - You backend is now deployed and can be accessed by the web!
 
 
@@ -2697,6 +2647,163 @@ web-production-040d2.up.railway.app
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app']
 
 ```
+
+
+2. In Settings file `datastore/src/core/settings.py`, under **ALLOWED_HOSTS** need to add **"CSRF_TRUSTED_ORIGINS"**  and include ***railway.app***.
+
+
+```python
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://*.railway.app",
+    "https://*.railway.app",
+]
+
+```
+
+3. Commit deployment config   
+- Head back to the root directory `datastore` 
+- Perform a git commit to save your django folders and files created:
+
+```bash
+  cd ..
+  git add .
+  git commit -m "deployment config "
+  git push -u origin master
+```
+
+- As soon as you make the commit, a new delopment should be automatically triggered on railway. 
+
+
+
+
+
+
+## TASK 8: PRODUCTION DATABASE WITH POSTGRES (USING NEON) 
+
+
+### Step 1: Create a Neon postgres Account 
+
+
+1. **Go to neon**
+   Visit [Neon](https://console.neon.tech/) and sign up or log in using your GitHub account.
+
+
+2. Click in the top right ***New Project*** 
+
+3. Give it a Project name called **"base_database"**
+
+4. Give it a Database name also called **"base_database"**
+
+5. Region select **AWS US West (Oregon)**
+
+6. Then continue and confim, if prompted reconnect to your github. 
+
+```bash
+base_database
+
+```
+
+### Step 2: Set up database enviroment varibales 
+
+1. Under the **Postgres** tab you should see your Postgres SQL URL, will look somthing like this 
+- click the URL  `******` on the URL, or click **Show password** to reveal the full URL
+
+```bash 
+postgresql://base_database_owner:K2R82wqasMmBw@ep-fancy-apple-a6q5ru8h.us-west-2.aws.neon.tech/base_database?sslmode=require
+
+```
+
+2. Copy this URL and add it to your enviroment varibales in your backend `.env` file. As **"DATABASE_URL"**
+
+```bash 
+DJANGO_SECRET_KEY=sqcdPwwWj4bWYM9jTfUdJ5gu8kH9vq0Ey5FbPdC2ZlIPa4I3gdJ0SC_6ESiDghStkxSB3gld
+DJANGO_DEBUG=1
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+DATABASE_URL=postgresql://base_database_owner:K2R82wqasMmBw@ep-fancy-apple-a6q5ru8h.us-west-2.aws.neon.tech/base_database?sslmode=require
+```
+
+
+3. Install **"dj-database-url"**, so we can connect to this postgres database in our backend throughthis URL.
+
+```bash
+pip install dj-database-url
+```
+
+
+4. Install **"psycopg[binary]"**, This is need to bind and connect python to the database engine. 
+
+```bash 
+pip install psycopg[binary]
+```
+
+
+5. In the setting.py `core/settings.py`, now need to update our database configuartions. 
+- Under **DATABASES**  add the **"DATABASE_URL"**. copy the code below:
+- This will get your enviroment varibale from `.env` file.
+- If the database url is available will update the DATABASES config 
+
+```python
+DATABASE_URL = config("DATABASE_URL", cast=str, default="")
+
+if DATABASE_URL != "":
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=300,
+            conn_health_checks=True
+        )
+    }
+```
+
+6. Run migrations to apply all migration to your new postgres database:
+- This should run fresh new migration as it will be getting uploaded to your neon postgres database 
+- This can take a few minutes when you run **makemigrations**
+
+```bash
+rav run makemigrations
+rav run migrate
+```
+- Restart your server:
+
+```bash
+rav run server
+```
+
+7. Commit database setup   
+- Head back to the root directory `datastore` 
+- Perform a git commit to save your django folders and files created:
+
+```bash
+  cd ..
+  git add .
+  git commit -m "database setup"
+  git push -u origin master
+```
+
+
+
+5. Add DATABASE_URL enviroment varibale to your railway backend deployment project  
+
+- Head back to Railway and open your backend project, go to the **Variables** tab and add the DATABASE_URL enviroment varibale 
+- Press ***New Varibale*** to add new varibale 
+
+```bash
+   | Key                   |  Value                                                                                       |
+   |-----------------------|----------------------------------------------------------------------------------------------|
+   | DATABASE_URL          | postgresql://base_database_owner:....west-2.aws.neon.tech/base_database?sslmode=require      |
+
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
