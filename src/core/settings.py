@@ -35,7 +35,12 @@ for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
 CORS_ALLOW_ALL_ORIGINS = False
 
 
-CORS_ORIGINS_BLACKLIST = [
+CORS_ORIGIN_BLACKLIST = [
+    "https://baseinterface-production.up.railway.app",
+    "http://baseinterface-production.up.railway.app",
+]
+
+CORS_ORIGIN_DENYLIST = [
     "https://baseinterface-production.up.railway.app",
     "http://baseinterface-production.up.railway.app",
 ]
@@ -55,8 +60,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'core.middleware.BlockSpecificDomainMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'cor.middleware.BlockSpecificDomainMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

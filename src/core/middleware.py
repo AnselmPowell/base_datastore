@@ -6,6 +6,7 @@ class BlockSpecificDomainMiddleware:
 
     def __call__(self, request):
         blocked_domain = 'baseinterface-production.up.railway.app'
-        if blocked_domain in request.get_host():
+        origin = request.headers.get('Origin', '')
+        if blocked_domain in origin:
             return HttpResponseForbidden("Access from this domain is not allowed.")
         return self.get_response(request)
