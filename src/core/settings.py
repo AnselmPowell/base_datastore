@@ -34,11 +34,18 @@ for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
 
 CORS_ALLOW_ALL_ORIGINS = False
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://*.railway.app",
-    "https://*.railway.app",
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://*.railway.app",
+#     "https://*.railway.app",
+# ]
 
+
+CORS_ORIGINS_BLACKLIST = [
+    "https://baseinterface-production.up.railway.app/",
+    "http://baseinterface-production.up.railway.app/",
+    "https://baseinterface-production.up.railway.app",
+    "baseinterface-production.up.railway.app"
+]
 
 # Application definition
 
