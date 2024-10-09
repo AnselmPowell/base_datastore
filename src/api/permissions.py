@@ -4,6 +4,9 @@ from rest_framework.exceptions import PermissionDenied
 class AllowSpecificDomainPermission(BasePermission):
     def has_permission(self, request, view):
         allowed_domains = [
+            'basedatastore-production.up.railway.app'
+            'https://basedatastore-production.up.railway.app',
+            'http://basedatastore-production.up.railway.app'
             'baseinterface-production.up.railway.app',
             'https://baseinterface-production.up.railway.app/',
             'http://baseinterface-production.up.railway.app/',
