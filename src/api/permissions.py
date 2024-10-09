@@ -4,14 +4,18 @@ from rest_framework.exceptions import PermissionDenied
 class AllowSpecificDomainPermission(BasePermission):
     def has_permission(self, request, view):
         allowed_domains = [
-            'basedatastore-production.up.railway.app'
-            'https://basedatastore-production.up.railway.app',
-            'http://basedatastore-production.up.railway.app'
             'baseinterface-production.up.railway.app',
             'https://baseinterface-production.up.railway.app',
             'http://baseinterface-production.up.railway.app',
+            'basedatastore-production.up.railway.app',
+            'https://basedatastore-production.up.railway.app',
+            'http://basedatastore-production.up.railway.app',
             # Add more allowed domains here
         ]
+        
+        # Allow access if the request is coming from the same host
+        if request.get_host() in allowed_domains:
+            return True
         
         origin = request.headers.get('Origin')
         referer = request.headers.get('Referer')
@@ -24,5 +28,9 @@ class AllowSpecificDomainPermission(BasePermission):
         if not origin and referer and any(domain in referer for domain in allowed_domains):
             return True
         
-        # If neither Origin nor Referer match allowed domains, deny access
+        # If it's a same-origin request (e.g., from the Django admin or API root)
+        if not origin and not referer:
+            return True
+        
+        # If none of the above conditions are met, deny access
         raise PermissionDenied("Access denied. Invalid origin.")
