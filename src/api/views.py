@@ -52,13 +52,14 @@ def user_list_create(request):
     #     return HttpResponseForbidden("Access denied. Invalid origin.")
 
     host = request.get_host().lower()
-    origin = str(request)
+    full_url = request.build_absolute_uri()
+    parsed_url = urlparse(full_url)
     
     if request.method == 'GET':
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         # return {"host": host, "origin": origin}
-        return Response({"host": host, "header": origin})
+        return Response({"host": host, "parsed_url": parsed_url})
         # return Response(serializer.data)
     elif request.method == 'POST':
         serializer = UserSerializer(data=request.data)
