@@ -69,14 +69,14 @@ def check_allowed_domains(request):
     origin = request.headers.get('Origin', '')
     referer = request.headers.get('Referer', '')
     
-    if not (origin or referer):
-        return True  # Allow requests without Origin or Referer (e.g., direct API calls)
+    # if not (origin or referer):
+    #     return True  # Allow requests without Origin or Referer (e.g., direct API calls)
     
-    if origin and any(domain in origin for domain in allowed_domains):
-        return True
+    # if origin and any(domain in origin for domain in allowed_domains):
+    #     return True
     
-    if referer and any(domain in referer for domain in allowed_domains):
-        return True
+    # if referer and any(domain in referer for domain in allowed_domains):
+    #     return True
     
     return False
 
