@@ -26,8 +26,8 @@ def check_allowed_domains(request):
         return parsed.netloc in allowed_domains or parsed.netloc.split(':')[0] in allowed_domains
 
     # Check if the request is coming from an allowed host
-    if host in allowed_domains:
-        return True
+    # if host in allowed_domains:
+    #     return True
 
     # Check if the request has a valid Origin header
     if origin and domain_match(origin):
