@@ -48,13 +48,17 @@ def api_root(request):
 
 @api_view(['GET', 'POST'])
 def user_list_create(request):
-    if not check_allowed_domains(request):
-        return HttpResponseForbidden("Access denied. Invalid origin.")
+    # if not check_allowed_domains(request):
+    #     return HttpResponseForbidden("Access denied. Invalid origin.")
+
+    host = request.get_host().lower()
+    origin = request.headers.get('Origin', '').lower()
     
     if request.method == 'GET':
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+        return {"host": host, "origin": origin}
+        # return Response(serializer.data)
     elif request.method == 'POST':
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
