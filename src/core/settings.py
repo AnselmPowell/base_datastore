@@ -200,13 +200,6 @@ CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'api.permissions.AllowSpecificDomainPermission',
-    ],
-    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+        'rest_framework.permissions.AllowAny',
+    ]
 }
-
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.AllowAny',
-#     ]
-# }
