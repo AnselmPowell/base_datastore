@@ -123,13 +123,14 @@ def user_list_create(request):
     full_url = request.build_absolute_uri()
     parsed_url = urlparse(full_url)
     request = log_request_details
+    request_str = str(request)
 
     
     if request.method == 'GET':
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         # return {"host": host, "origin": origin}
-        return Response({"host": host, "request": request})
+        return Response({"host": host, "request": request_str})
         # return Response(serializer.data)
     elif request.method == 'POST':
         serializer = UserSerializer(data=request.data)
