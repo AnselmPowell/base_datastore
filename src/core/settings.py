@@ -26,12 +26,16 @@ DEBUG = config("DJANGO_DEBUG", cast=bool, default=False)
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://basedatastore-production.up.railway.app', 'basedatastore-production.up.railway.app']
 
 
+
 CORS_ALLOWED_ORIGINS = []
+print(f"CORS_ALLOWED_ORIGINS BEFORE: {CORS_ALLOWED_ORIGINS}")
+
+
 ENV_CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", cast=str, default="")
 for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
     CORS_ALLOWED_ORIGINS.append(f"{origin}".strip().lower())
 
-
+print(f"CORS_ALLOWED_ORIGINS AFTER: {CORS_ALLOWED_ORIGINS}")
 
 # Application definition
 
