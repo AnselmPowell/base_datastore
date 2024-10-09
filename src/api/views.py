@@ -7,6 +7,74 @@ from django.contrib.auth.models import User as AdminUser
 from django.http import HttpResponseForbidden
 from urllib.parse import urlparse
 
+import logging
+import json
+from pprint import pformat
+
+logger = logging.getLogger(__name__)
+
+def log_request_details(request):
+    # Basic request information
+    request_data = {
+        "method": request.method,
+        "path": request.path,
+        "path_info": request.path_info,
+        "scheme": request.scheme,
+        "full_url": request.build_absolute_uri(),
+        "is_secure": request.is_secure(),
+        "is_ajax": request.headers.get('X-Requested-With') == 'XMLHttpRequest',
+        "content_type": request.content_type,
+        "content_params": request.content_params,
+    }
+
+    # Headers
+    request_data["headers"] = dict(request.headers)
+
+    # GET parameters
+    request_data["GET"] = dict(request.GET)
+
+    # POST data (be cautious with sensitive information)
+    if request.method == "POST":
+        try:
+            request_data["POST"] = json.loads(request.body)
+        except json.JSONDecodeError:
+            request_data["POST"] = dict(request.POST)
+
+    # Files
+    request_data["FILES"] = {k: v.name for k, v in request.FILES.items()} if request.FILES else {}
+
+    # Cookies
+    request_data["COOKIES"] = dict(request.COOKIES)
+
+    # Session data (if using sessions)
+    if hasattr(request, 'session'):
+        request_data["SESSION"] = dict(request.session)
+
+    # META data
+    meta_copy = request.META.copy()
+    # Remove any sensitive information from META
+    for key in ['HTTP_COOKIE', 'HTTP_AUTHORIZATION']:
+        if key in meta_copy:
+            del meta_copy[key]
+    request_data["META"] = meta_copy
+
+    # User information (if authenticated)
+    if request.user.is_authenticated:
+        request_data["USER"] = {
+            "id": request.user.id,
+            "username": request.user.username,
+            "email": request.user.email,
+            "is_staff": request.user.is_staff,
+            "is_superuser": request.user.is_superuser,
+        }
+    else:
+        request_data["USER"] = "AnonymousUser"
+
+    # Log the gathered information
+    logger.info(f"Detailed request information:\n{pformat(request_data)}")
+
+    return request_data
+
 def check_allowed_domains(request):
     allowed_domains = [
         'baseinterface-production.up.railway.app',
@@ -54,13 +122,14 @@ def user_list_create(request):
     host = request.get_host().lower()
     full_url = request.build_absolute_uri()
     parsed_url = urlparse(full_url)
-    meta = request.META
+    request = log_request_details
+
     
     if request.method == 'GET':
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         # return {"host": host, "origin": origin}
-        return Response({"host": host, "parsed_url": parsed_url, "meta": meta})
+        return Response({"host": host, "request": request})
         # return Response(serializer.data)
     elif request.method == 'POST':
         serializer = UserSerializer(data=request.data)
