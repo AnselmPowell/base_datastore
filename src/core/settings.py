@@ -23,9 +23,9 @@ SECRET_KEY = config("DJANGO_SECRET_KEY", cast=str)
 DEBUG = config("DJANGO_DEBUG", cast=bool, default=False)
 
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://basedatastore-production.up.railway.app/', '.basedatastore-production.up.railway.app/']
-# if DEBUG:
-#     ALLOWED_HOSTS = [""]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://basedatastore-production.up.railway.app', 'basedatastore-production.up.railway.app']
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
 
 
 # CSRF_TRUSTED_ORIGINS = [
