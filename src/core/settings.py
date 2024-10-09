@@ -32,8 +32,8 @@ print(f"CORS_ALLOWED_ORIGINS BEFORE: {CORS_ALLOWED_ORIGINS}")
 
 
 ENV_CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", cast=str, default="")
-for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
-    CORS_ALLOWED_ORIGINS.append(f"{origin}".strip().lower())
+# for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
+#     CORS_ALLOWED_ORIGINS.append(f"{origin}".strip().lower())
 
 print(f"CORS_ALLOWED_ORIGINS AFTER: {CORS_ALLOWED_ORIGINS}")
 
