@@ -24,14 +24,7 @@ DEBUG = config("DJANGO_DEBUG", cast=bool, default=False)
 
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://basedatastore-production.up.railway.app', 'basedatastore-production.up.railway.app']
-if DEBUG:
-    ALLOWED_HOSTS = ["*"]
 
-
-# CSRF_TRUSTED_ORIGINS = [
-#     "http://*.railway.app",
-#     "https://*.railway.app",
-# ]
 
 CORS_ALLOWED_ORIGINS = []
 ENV_CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", cast=str, default="")
