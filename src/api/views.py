@@ -59,25 +59,27 @@ from django.http import HttpResponseForbidden
 def check_allowed_domains(request):
     allowed_domains = [
         'baseinterface-production.up.railway.app',
-        'https://baseinterface-production.up.railway.app',
-        'http://baseinterface-production.up.railway.app',
         'basedatastore-production.up.railway.app',
-        'https://basedatastore-production.up.railway.app',
-        'http://basedatastore-production.up.railway.app',
     ]
     
-    origin = request.headers.get('Origin', '')
-    referer = request.headers.get('Referer', '')
-    
-    # if not (origin or referer):
-    #     return True  # Allow requests without Origin or Referer (e.g., direct API calls)
-    
-    # if origin and any(domain in origin for domain in allowed_domains):
-    #     return True
-    
-    # if referer and any(domain in referer for domain in allowed_domains):
-    #     return True
-    
+    host = request.get_host().lower()
+    origin = request.headers.get('Origin', '').lower()
+    referer = request.headers.get('Referer', '').lower()
+
+    # Check if the request is coming from an allowed host
+    if any(host.endswith(domain.lower()) for domain in allowed_domains):
+        return True
+
+    # Check if the request has a valid Origin header
+    if origin:
+        if any(origin.endswith(f"://{domain.lower()}") for domain in allowed_domains):
+            return True
+    # If no Origin, check Referer as a fallback
+    elif referer:
+        if any(referer.startswith(f"http://{domain.lower()}") or referer.startswith(f"https://{domain.lower()}") for domain in allowed_domains):
+            return True
+
+    # If none of the above conditions are met, deny access
     return False
 
 
