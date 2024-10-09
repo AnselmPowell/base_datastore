@@ -57,7 +57,8 @@ def user_list_create(request):
     if request.method == 'GET':
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
-        return {"host": host, "origin": origin}
+        # return {"host": host, "origin": origin}
+        return Response({"host": host, "origin": origin})
         # return Response(serializer.data)
     elif request.method == 'POST':
         serializer = UserSerializer(data=request.data)
