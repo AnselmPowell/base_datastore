@@ -4,12 +4,16 @@ from rest_framework import status
 from .models import User
 from .serializers import UserSerializer, AdminUserSerializer
 from django.contrib.auth.models import User as AdminUser
+from .permissions import AllowSpecificDomainPermission
+
 
 @api_view(['GET'])
+@permission_classes([AllowSpecificDomainPermission])
 def api_root(request):
     return Response({"message": "Welcome to the Django API DataStore"})
 
 @api_view(['GET', 'POST'])
+@permission_classes([AllowSpecificDomainPermission])
 def user_list_create(request):
     if request.method == 'GET':
         users = User.objects.all()
@@ -24,6 +28,7 @@ def user_list_create(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([AllowSpecificDomainPermission])
 def user_detail(request, pk):
     try:
         user = User.objects.get(pk=pk)
@@ -46,6 +51,7 @@ def user_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
+@permission_classes([AllowSpecificDomainPermission])
 def admin_user_list(request):
     admin_users = AdminUser.objects.all()
     serializer = AdminUserSerializer(admin_users, many=True)

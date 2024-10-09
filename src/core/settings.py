@@ -24,7 +24,12 @@ DEBUG = config("DJANGO_DEBUG", cast=bool, default=False)
 
 
 ALLOWED_HOSTS = ['https://basedatastore-production.up.railway.app', 'basedatastore-production.up.railway.app']
+# 'localhost', '127.0.0.1',
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://*.railway.app",
+    "https://*.railway.app",
+]
 
 CORS_ALLOWED_ORIGINS = []
 ENV_CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", cast=str, default="")
@@ -32,27 +37,9 @@ for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
     CORS_ALLOWED_ORIGINS.append(f"{origin}".strip().lower())
 
 
+
+
 CORS_ALLOW_ALL_ORIGINS = False
-
-BLOCKED_DOMAINS = [
-    'http://127.0.0.1:3000',
-    'http://localhost:3000',
-
-]
-
-CORS_ORIGIN_BLACKLIST = [
-    "https://127.0.0.1:3000",
-    "http://127.0.0.1:3000",
-    'http://localhost:3000',
-    
-
-]
-
-CORS_ORIGIN_DENYLIST = [
-    "https://127.0.0.1:3000",
-    "http://127.0.0.1:3000",
-    'http://localhost:3000',
-]
 
 # Application definition
 
@@ -69,7 +56,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'core.middleware.BlockSpecificDomainMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -215,6 +201,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ]
+        'api.permissions.AllowSpecificDomainPermission',
+    ],
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
 }
