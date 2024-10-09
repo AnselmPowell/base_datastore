@@ -28,8 +28,6 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://basedatastore-production.up.
 
 
 CORS_ALLOWED_ORIGINS = []
-print(f"CORS_ALLOWED_ORIGINS BEFORE: {CORS_ALLOWED_ORIGINS}")
-
 
 ENV_CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", cast=str, default="")
 # for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
@@ -38,7 +36,9 @@ ENV_CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", cast=str, default="")
 print(f"CORS_ALLOWED_ORIGINS AFTER: {CORS_ALLOWED_ORIGINS}")
 
 
-CORS_ALLOW_ALL_ORIGINS = False 
+CORS_ALLOW_ALL_ORIGINS = False
+
+
 # Application definition
 
 INSTALLED_APPS = [
