@@ -37,6 +37,8 @@ for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
 
 print(f"CORS_ALLOWED_ORIGINS AFTER: {CORS_ALLOWED_ORIGINS}")
 
+
+CORS_ALLOW_ALL_ORIGINS = False 
 # Application definition
 
 INSTALLED_APPS = [
@@ -162,7 +164,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
  # For development, restrict this in production
-# CORS_ALLOW_ALL_ORIGINS = True  
 
 
 # Default primary key field type
