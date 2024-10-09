@@ -23,7 +23,7 @@ SECRET_KEY = config("DJANGO_SECRET_KEY", cast=str)
 DEBUG = config("DJANGO_DEBUG", cast=bool, default=False)
 
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://basedatastore-production.up.railway.app', 'basedatastore-production.up.railway.app']
+ALLOWED_HOSTS = ['https://basedatastore-production.up.railway.app', 'basedatastore-production.up.railway.app']
 
 
 CORS_ALLOWED_ORIGINS = []
@@ -34,15 +34,24 @@ for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
 
 CORS_ALLOW_ALL_ORIGINS = False
 
+BLOCKED_DOMAINS = [
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+
+]
 
 CORS_ORIGIN_BLACKLIST = [
-    "https://baseinterface-production.up.railway.app",
-    "http://baseinterface-production.up.railway.app",
+    "https://127.0.0.1:3000",
+    "http://127.0.0.1:3000",
+    'http://localhost:3000',
+    
+
 ]
 
 CORS_ORIGIN_DENYLIST = [
-    "https://baseinterface-production.up.railway.app",
-    "http://baseinterface-production.up.railway.app",
+    "https://127.0.0.1:3000",
+    "http://127.0.0.1:3000",
+    'http://localhost:3000',
 ]
 
 # Application definition
