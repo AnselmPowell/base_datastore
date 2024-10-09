@@ -36,10 +36,8 @@ CORS_ALLOW_ALL_ORIGINS = False
 
 
 CORS_ORIGINS_BLACKLIST = [
-    "https://baseinterface-production.up.railway.app/",
-    "http://baseinterface-production.up.railway.app/",
     "https://baseinterface-production.up.railway.app",
-    "baseinterface-production.up.railway.app"
+    "http://baseinterface-production.up.railway.app",
 ]
 
 # Application definition
@@ -57,8 +55,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'core.middleware.BlockSpecificDomainMiddleware'
     'corsheaders.middleware.CorsMiddleware',
+    'core.middleware.BlockSpecificDomainMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
