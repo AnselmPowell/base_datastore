@@ -38,7 +38,6 @@ for origin in ENV_CORS_ALLOWED_ORIGINS.split(","):
 
 
 
-
 CORS_ALLOW_ALL_ORIGINS = False
 
 # Application definition
@@ -205,3 +204,9 @@ REST_FRAMEWORK = {
     ],
     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
 }
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.AllowAny',
+#     ]
+# }
